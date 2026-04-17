@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmacia San Marcos · Sistema de Gestión</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --verde-principal: #10b981;
+            --verde-oscuro: #059669;
+            --verde-claro: #d1fae5;
+            --rojo: #ef4444;
+            --amarillo: #f59e0b;
+            --azul: #3b82f6;
+            --morado: #8b5cf6;
+            --gris-fondo: #f8fafc;
+            --gris-texto: #475569;
+            --gris-borde: #e2e8f0;
+            --negro: #0f172a;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--gris-fondo);
+            color: var(--negro);
+            min-height: 100vh;
+        }
+
+        /* HEADER */
+        header {
+            background: linear-gradient(135deg, var(--verde-principal), var(--verde-oscuro));
+            color: white;
+            padding: 20px 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: white;
+            color: var(--verde-principal);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .user-info {
+            font-size: 14px;
+            opacity: 0.95;
+        }
+
+        /* TABS */
+        .tabs {
+            background: white;
+            border-bottom: 2px solid var(--gris-borde);
+            padding: 0 40px;
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 16px 24px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--gris-texto);
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+            font-size: 14px;
+        }
+
+        .tab:hover {
+            color: var(--verde-principal);
+            background: var(--verde-claro);
+        }
+
+        .tab.active {
+            color: var(--verde-principal);
+            border-bottom-color: var(--verde-principal);
+        }
+
+        .tab-icon {
+            margin-right: 6px;
+        }
+
+        /* MAIN */
+        main {
+            padding: 32px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--negro);
+            margin-bottom: 8px;
+        }
+
+        .section-subtitle {
+            color: var(--gris-texto);
+            margin-bottom: 24px;
+        }
+
+        /* CARDS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid var(--gris-borde);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--verde-principal);
+        }
+
+        .stat-card.rojo::before {
+            background: var(--rojo);
+        }
+
+        .stat-card.amarillo::before {
+            background: var(--amarillo);
+        }
+
+        .stat-card.azul::before {
+            background: var(--azul);
+        }
+
+        .stat-card.morado::before {
+            background: var(--morado);
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--gris-texto);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--negro);
+        }
+
+        .stat-sub {
+            font-size: 12px;
+            color: var(--gris-texto);
+            margin-top: 4px;
+        }
+
+        /* BOTONES */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: var(--verde-principal);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--verde-oscuro);
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: var(--rojo);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--verde-principal);
+            border: 1px solid var(--verde-principal);
+        }
+
+        .btn-secondary:hover {
+            background: var(--verde-claro);
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .actions-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        /* TABLA */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--gris-borde);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--gris-fondo);
+        }
+
+        th {
+            padding: 14px 16px;
+            text-align: left;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--gris-texto);
+            border-bottom: 2px solid var(--gris-borde);
+        }
+
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--gris-borde);
+            font-size: 14px;
+        }
+
+        tbody tr:hover {
+            background: var(--gris-fondo);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-verde {
+            background: var(--verde-claro);
+            color: var(--verde-oscuro);
+        }
+
+        .badge-amarillo {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .badge-azul {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-morado {
+            background: #ede9fe;
+            color: #6d28d9;
+        }
+
+        .badge-gris {
+            background: #f1f5f9;
+            color: var(--gris-texto);
+        }
+
+        /* FORMULARIO MODAL */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 12px;
+            padding: 28px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--negro);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--negro);
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--gris-borde);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--verde-principal);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+
+        /* LOGIN */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--verde-principal) 0%, var(--verde-oscuro) 100%);
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            max-width: 420px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .login-logo {
+            width: 72px;
+            height: 72px;
+            background: var(--verde-principal);
+            color: white;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            font-weight: bold;
+            margin: 0 auto 16px;
+        }
+
+        .login-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: var(--negro);
+            margin-bottom: 6px;
+        }
+
+        .login-subtitle {
+            color: var(--gris-texto);
+            font-size: 14px;
+            margin-bottom: 28px;
+        }
+
+        .login-form {
+            text-align: left;
+        }
+
+        .login-footer {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--gris-borde);
+            font-size: 12px;
+            color: var(--gris-texto);
+        }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: white;
+            border-radius: 10px;
+            padding: 16px 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border-left: 4px solid var(--verde-principal);
+            min-width: 300px;
+            max-width: 420px;
+            z-index: 200;
+            animation: slideIn 0.3s;
+        }
+
+        .toast.error {
+            border-left-color: var(--rojo);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .toast-title {
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .toast-msg {
+            font-size: 13px;
+            color: var(--gris-texto);
+        }
+
+        /* CATÁLOGO PÚBLICO */
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .catalog-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--gris-borde);
+            transition: all 0.2s;
+        }
+
+        .catalog-card:hover {
+            border-color: var(--verde-principal);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.15);
+        }
+
+        .catalog-pill {
+            background: var(--verde-claro);
+            color: var(--verde-oscuro);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .catalog-name {
+            font-weight: bold;
+            color: var(--negro);
+            margin-bottom: 4px;
+        }
+
+        .catalog-cat {
+            font-size: 13px;
+            color: var(--gris-texto);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gris-texto);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+
+        /* LOADING */
+        .loader {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ========== PANTALLA DE LOGIN ========== -->
+    <div id="login-screen" class="login-container">
+        <div class="login-box">
+            <div class="login-logo">+</div>
+            <h1 class="login-title">Farmacia San Marcos</h1>
+            <p class="login-subtitle">Sistema de Gestión Integral</p>
+
+            <form class="login-form" onsubmit="login(event)">
+                <div class="form-group">
+                    <label class="form-label">Usuario</label>
+                    <input type="text" class="form-input" id="login-user" value="distribuidor" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Contraseña</label>
+                    <input type="password" class="form-input" id="login-pass" value="farmacia2025" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px;">
+                    Iniciar Sesión
+                </button>
+            </form>
+
+            <div class="login-footer">
+                Sistema distribuido con microservicios<br>
+                Spring Boot · MySQL · Lima, Perú
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== APLICACIÓN PRINCIPAL ========== -->
+    <div id="main-app" style="display: none;">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">+</div>
+                <span>Farmacia San Marcos</span>
+            </div>
+            <div class="user-info">
+                <span id="user-name">Usuario</span> ·
+                <a href="#" onclick="logout(); return false;" style="color: white; text-decoration: underline;">Cerrar
+                    sesión</a>
+            </div>
+        </header>
+
+        <nav class="tabs">
+            <div class="tab active" onclick="showTab('dashboard')">Dashboard</div>
+            <div class="tab" onclick="showTab('catalogo')">Catálogo</div>
+            <div class="tab" onclick="showTab('laboratorio')">Laboratorio</div>
+            <div class="tab" onclick="showTab('distribuidor')">Distribuidor</div>
+            <div class="tab" onclick="showTab('farmacia')">Farmacia</div>
+            <div class="tab" onclick="showTab('ventas')">Ventas</div>
+            <div class="tab" onclick="showTab('reportes')">Reportes</div>
+        </nav>
+
+        <main>
+            <!-- ===== DASHBOARD ===== -->
+            <section id="dashboard" class="section active">
+                <h2 class="section-title">Dashboard</h2>
+                <p class="section-subtitle">Resumen general del sistema</p>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Total de Ventas</div>
+                        <div class="stat-value" id="stat-ventas">—</div>
+                        <div class="stat-sub">Transacciones registradas</div>
+                    </div>
+                    <div class="stat-card amarillo">
+                        <div class="stat-label">Ingresos Totales</div>
+                        <div class="stat-value" id="stat-ingresos">—</div>
+                        <div class="stat-sub">En soles (S/.)</div>
+                    </div>
+                    <div class="stat-card azul">
+                        <div class="stat-label">Unidades Vendidas</div>
+                        <div class="stat-value" id="stat-unidades">—</div>
+                        <div class="stat-sub">Medicamentos dispensados</div>
+                    </div>
+                    <div class="stat-card morado">
+                        <div class="stat-label">Lotes en Farmacia</div>
+                        <div class="stat-value" id="stat-lotes">—</div>
+                        <div class="stat-sub">Disponibles para venta</div>
+                    </div>
+                </div>
+
+                <h3 style="margin-bottom: 16px;">Estado de los Microservicios</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Microservicio</th>
+                                <th>Puerto</th>
+                                <th>Seguridad</th>
+                                <th>Base de datos</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Eureka Server</td>
+                                <td>8000</td>
+                                <td>—</td>
+                                <td>—</td>
+                                <td><span class="badge badge-verde">● Activo</span></td>
+                            </tr>
+                            <tr>
+                                <td>ms-laboratorio</td>
+                                <td>8001</td>
+                                <td>Basic Auth</td>
+                                <td>farmacia_laboratorio</td>
+                                <td><span class="badge badge-verde">● Activo</span></td>
+                            </tr>
+                            <tr>
+                                <td>ms-distribuidor</td>
+                                <td>8002</td>
+                                <td>JWT</td>
+                                <td>farmacia_distribuidor</td>
+                                <td><span class="badge badge-verde">● Activo</span></td>
+                            </tr>
+                            <tr>
+                                <td>ms-farmacia</td>
+                                <td>8003</td>
+                                <td>OAuth2</td>
+                                <td>farmacia_farmacia</td>
+                                <td><span class="badge badge-verde">● Activo</span></td>
+                            </tr>
+                            <tr>
+                                <td>ms-reportes-soap</td>
+                                <td>8004</td>
+                                <td>SOAP/REST</td>
+                                <td>farmacia_reportes</td>
+                                <td><span class="badge badge-verde">● Activo</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ===== CATÁLOGO PÚBLICO ===== -->
+            <section id="catalogo" class="section">
+                <h2 class="section-title">Catálogo Público</h2>
+                <p class="section-subtitle">Medicamentos disponibles (endpoint público sin autenticación)</p>
+                <div class="catalog-grid" id="catalog-grid"></div>
+            </section>
+
+            <!-- ===== LABORATORIO ===== -->
+            <section id="laboratorio" class="section">
+                <h2 class="section-title">Laboratorio</h2>
+                <p class="section-subtitle">Producción de lotes de medicamentos (Basic Auth)</p>
+                <div class="actions-bar">
+                    <button class="btn btn-primary" onclick="openModal('modal-producir')">+ Producir nuevo lote</button>
+                    <button class="btn btn-secondary" onclick="cargarLaboratorio()">Actualizar</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Lote ID</th>
+                                <th>Medicamento</th>
+                                <th>Categoría</th>
+                                <th>Cantidad</th>
+                                <th>Precio (S/.)</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lab-tbody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ===== DISTRIBUIDOR ===== -->
+            <section id="distribuidor" class="section">
+                <h2 class="section-title">Distribuidor</h2>
+                <p class="section-subtitle">Inventario y despacho a farmacia (autenticación JWT)</p>
+                <div class="actions-bar">
+                    <button class="btn btn-secondary" onclick="cargarDistribuidor()">Actualizar</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Lote ID</th>
+                                <th>Medicamento</th>
+                                <th>Cantidad</th>
+                                <th>Precio (S/.)</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dist-tbody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ===== FARMACIA ===== -->
+            <section id="farmacia" class="section">
+                <h2 class="section-title">Farmacia - Stock</h2>
+                <p class="section-subtitle">Medicamentos disponibles para venta al cliente</p>
+                <div class="actions-bar">
+                    <button class="btn btn-secondary" onclick="cargarFarmacia()">Actualizar</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Lote ID</th>
+                                <th>Medicamento</th>
+                                <th>Categoría</th>
+                                <th>Stock</th>
+                                <th>Precio (S/.)</th>
+                                <th>Vencimiento</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="farm-tbody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ===== VENTAS ===== -->
+            <section id="ventas" class="section">
+                <h2 class="section-title">Historial de Ventas</h2>
+                <p class="section-subtitle">Todas las ventas registradas en el sistema</p>
+                <div class="actions-bar">
+                    <button class="btn btn-secondary" onclick="cargarVentas()">Actualizar</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Venta ID</th>
+                                <th>Medicamento</th>
+                                <th>Cantidad</th>
+                                <th>Cliente</th>
+                                <th>Total (S/.)</th>
+                                <th>Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ventas-tbody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ===== REPORTES ===== -->
+            <section id="reportes" class="section">
+                <h2 class="section-title">Reportes (SOAP + REST)</h2>
+                <p class="section-subtitle">Resumen consolidado generado por el microservicio de reportes</p>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Ventas</div>
+                        <div class="stat-value" id="rep-ventas">—</div>
+                    </div>
+                    <div class="stat-card amarillo">
+                        <div class="stat-label">Ingreso Total</div>
+                        <div class="stat-value" id="rep-ingreso">—</div>
+                    </div>
+                    <div class="stat-card azul">
+                        <div class="stat-label">Unidades Vendidas</div>
+                        <div class="stat-value" id="rep-unidades">—</div>
+                    </div>
+                </div>
+
+                <div class="actions-bar">
+                    <button class="btn btn-primary" onclick="cargarReportes()">Actualizar resumen</button>
+                    <button class="btn btn-secondary"
+                        onclick="window.open(API_REPORTES + '/reportes/xml', '_blank')">Ver reporte XML</button>
+                    <button class="btn btn-secondary"
+                        onclick="window.open(API_REPORTES + '/ws/reportes.wsdl', '_blank')">Ver WSDL (SOAP)</button>
+                </div>
+
+                <h3 style="margin-bottom: 16px;">Ventas registradas en reportes</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Venta ID</th>
+                                <th>Medicamento</th>
+                                <th>Cantidad</th>
+                                <th>Total (S/.)</th>
+                                <th>Cliente</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rep-tbody"></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- ========== MODAL: Producir Lote ========== -->
+    <div class="modal-overlay" id="modal-producir">
+        <div class="modal">
+            <h3 class="modal-title">Producir nuevo lote</h3>
+            <form onsubmit="producirLote(event)">
+                <div class="form-group">
+                    <label class="form-label">ID del lote</label>
+                    <input type="text" class="form-input" id="prod-id" placeholder="Ej: LOT-100" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Medicamento</label>
+                    <input type="text" class="form-input" id="prod-med" placeholder="Ej: Paracetamol 500mg x 100"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Categoría</label>
+                    <input type="text" class="form-input" id="prod-cat" placeholder="Ej: Analgésico" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Cantidad</label>
+                    <input type="number" class="form-input" id="prod-cant" value="100" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Precio unitario (S/.)</label>
+                    <input type="number" class="form-input" id="prod-precio" value="1.00" step="0.01" min="0" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary"
+                        onclick="closeModal('modal-producir')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Producir</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========== MODAL: Vender ========== -->
+    <div class="modal-overlay" id="modal-vender">
+        <div class="modal">
+            <h3 class="modal-title">Registrar venta</h3>
+            <form onsubmit="venderMedicamento(event)">
+                <div class="form-group">
+                    <label class="form-label">Lote</label>
+                    <input type="text" class="form-input" id="venta-lote" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Medicamento</label>
+                    <input type="text" class="form-input" id="venta-med" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Cantidad a vender</label>
+                    <input type="number" class="form-input" id="venta-cant" value="1" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Cliente</label>
+                    <input type="text" class="form-input" id="venta-cliente" value="Cliente General" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary"
+                        onclick="closeModal('modal-vender')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Vender</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ========================================
+        // CONFIGURACIÓN DE URLs DE MICROSERVICIOS
+        // ========================================
+        const API_LAB = 'http://localhost:8001';
+        const API_DIST = 'http://localhost:8002';
+        const API_FARMACIA = 'http://localhost:8003';
+        const API_REPORTES = 'http://localhost:8004';
+
+        // Credenciales fijas del sistema
+        const AUTH_LAB = 'Basic ' + btoa('laboratorio:farmacia2025');
+
+        let jwtToken = null;
+        let currentUser = null;
+
+        // ========================================
+        // LOGIN (usa /auth/login del distribuidor)
+        // ========================================
+        async function login(e) {
+            e.preventDefault();
+            const user = document.getElementById('login-user').value;
+            const pass = document.getElementById('login-pass').value;
+
+            try {
+                const res = await fetch(API_DIST + '/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: user, password: pass })
+                });
+
+                if (!res.ok) throw new Error('Credenciales inválidas');
+
+                const data = await res.json();
+                jwtToken = data.token;
+                currentUser = user;
+
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('main-app').style.display = 'block';
+                document.getElementById('user-name').textContent = user;
+
+                showToast('Bienvenido', 'Sesión iniciada correctamente');
+                cargarDashboard();
+            } catch (err) {
+                showToast('Error', 'Usuario o contraseña incorrectos. Verifica que los microservicios estén corriendo.', true);
+            }
+        }
+
+        function logout() {
+            jwtToken = null;
+            currentUser = null;
+            document.getElementById('main-app').style.display = 'none';
+            document.getElementById('login-screen').style.display = 'flex';
+        }
+
+        // ========================================
+        // NAVEGACIÓN
+        // ========================================
+        function showTab(name) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(name).classList.add('active');
+            event.target.classList.add('active');
+
+            // Cargar datos de la pestaña
+            if (name === 'dashboard') cargarDashboard();
+            if (name === 'catalogo') cargarCatalogo();
+            if (name === 'laboratorio') cargarLaboratorio();
+            if (name === 'distribuidor') cargarDistribuidor();
+            if (name === 'farmacia') cargarFarmacia();
+            if (name === 'ventas') cargarVentas();
+            if (name === 'reportes') cargarReportes();
+        }
+
+        // ========================================
+        // MODALES
+        // ========================================
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        // ========================================
+        // TOAST
+        // ========================================
+        function showToast(title, msg, isError) {
+            const toast = document.createElement('div');
+            toast.className = 'toast' + (isError ? ' error' : '');
+            toast.innerHTML = `<div class="toast-title">${title}</div><div class="toast-msg">${msg}</div>`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+
+        // ========================================
+        // DASHBOARD
+        // ========================================
+        async function cargarDashboard() {
+            try {
+                const resResumen = await fetch(API_REPORTES + '/reportes/resumen');
+                const resumen = await resResumen.json();
+                document.getElementById('stat-ventas').textContent = resumen.totalVentas ?? 0;
+                document.getElementById('stat-ingresos').textContent = 'S/. ' + (resumen.ingresoTotal ?? 0).toFixed(2);
+                document.getElementById('stat-unidades').textContent = resumen.totalUnidades ?? 0;
+
+                const resStock = await fetch(API_FARMACIA + '/farmacia/stock', {
+                    headers: { 'Authorization': 'Bearer ' + jwtToken }
+                });
+                if (resStock.ok) {
+                    const stock = await resStock.json();
+                    document.getElementById('stat-lotes').textContent = stock.length;
+                }
+            } catch (err) {
+                console.error('Error cargando dashboard:', err);
+            }
+        }
+
+        // ========================================
+        // CATÁLOGO (endpoint público)
+        // ========================================
+        async function cargarCatalogo() {
+            try {
+                const res = await fetch(API_FARMACIA + '/farmacia/public/catalogo');
+                const data = await res.json();
+                const grid = document.getElementById('catalog-grid');
+                grid.innerHTML = data.map(med => `
+                <div class="catalog-card">
+                    <span class="catalog-pill">${med.categoria}</span>
+                    <div class="catalog-name">${med.nombre}</div>
+                </div>
+            `).join('');
+            } catch (err) {
+                showToast('Error', 'No se pudo cargar el catálogo', true);
+            }
+        }
+
+        // ========================================
+        // LABORATORIO
+        // ========================================
+        async function cargarLaboratorio() {
+            try {
+                const res = await fetch(API_LAB + '/laboratorio/lotes', {
+                    headers: { 'Authorization': AUTH_LAB }
+                });
+                const lotes = await res.json();
+                const tbody = document.getElementById('lab-tbody');
+                if (lotes.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No hay lotes producidos</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = lotes.map(l => `
+                <tr>
+                    <td><strong>${l.loteId}</strong></td>
+                    <td>${l.medicamento}</td>
+                    <td>${l.categoria || '-'}</td>
+                    <td>${l.cantidad}</td>
+                    <td>${(l.precioUnitario ?? 0).toFixed(2)}</td>
+                    <td>${badge(l.estado)}</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" onclick="enviarADistribuidor('${l.loteId}')">Enviar</button>
+                    </td>
+                </tr>
+            `).join('');
+            } catch (err) {
+                showToast('Error', 'No se pudo cargar laboratorio', true);
+            }
+        }
+
+        async function producirLote(e) {
+            e.preventDefault();
+            const lote = {
+                loteId: document.getElementById('prod-id').value,
+                medicamento: document.getElementById('prod-med').value,
+                categoria: document.getElementById('prod-cat').value,
+                cantidad: parseInt(document.getElementById('prod-cant').value),
+                precioUnitario: parseFloat(document.getElementById('prod-precio').value)
+            };
+            try {
+                const res = await fetch(API_LAB + '/laboratorio/producir', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': AUTH_LAB },
+                    body: JSON.stringify(lote)
+                });
+                if (!res.ok) throw new Error('Error');
+                closeModal('modal-producir');
+                showToast('Éxito', `Lote ${lote.loteId} producido correctamente`);
+                cargarLaboratorio();
+            } catch (err) {
+                showToast('Error', 'No se pudo producir el lote', true);
+            }
+        }
+
+        async function enviarADistribuidor(loteId) {
+            if (!confirm(`¿Enviar el lote ${loteId} al distribuidor?`)) return;
+            try {
+                const res = await fetch(API_LAB + `/laboratorio/enviar/${loteId}`, {
+                    method: 'POST',
+                    headers: { 'Authorization': AUTH_LAB }
+                });
+                if (!res.ok) throw new Error();
+                showToast('Éxito', `Lote ${loteId} enviado al distribuidor (vía OpenFeign)`);
+                cargarLaboratorio();
+            } catch (err) {
+                showToast('Error', 'No se pudo enviar el lote', true);
+            }
+        }
+
+        // ========================================
+        // DISTRIBUIDOR
+        // ========================================
+        async function cargarDistribuidor() {
+            try {
+                const res = await fetch(API_DIST + '/distribuidor/inventario', {
+                    headers: { 'Authorization': 'Bearer ' + jwtToken }
+                });
+                const lotes = await res.json();
+                const tbody = document.getElementById('dist-tbody');
+                if (lotes.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No hay lotes en el inventario</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = lotes.map(l => `
+                <tr>
+                    <td><strong>${l.loteId}</strong></td>
+                    <td>${l.medicamento}</td>
+                    <td>${l.cantidad}</td>
+                    <td>${(l.precioUnitario ?? 0).toFixed(2)}</td>
+                    <td>${badge(l.estado)}</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" onclick="despacharAFarmacia('${l.loteId}')">Despachar</button>
+                    </td>
+                </tr>
+            `).join('');
+            } catch (err) {
+                showToast('Error', 'No se pudo cargar el inventario', true);
+            }
+        }
+
+        async function despacharAFarmacia(loteId) {
+            if (!confirm(`¿Despachar el lote ${loteId} a la farmacia?`)) return;
+            try {
+                const res = await fetch(API_DIST + `/distribuidor/despachar/${loteId}`, {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + jwtToken }
+                });
+                if (!res.ok) throw new Error();
+                showToast('Éxito', `Lote ${loteId} despachado a farmacia (vía OpenFeign)`);
+                cargarDistribuidor();
+            } catch (err) {
+                showToast('Error', 'No se pudo despachar el lote', true);
+            }
+        }
+
+        // ========================================
+        // FARMACIA
+        // ========================================
+        async function cargarFarmacia() {
+            try {
+                const res = await fetch(API_FARMACIA + '/farmacia/stock', {
+                    headers: { 'Authorization': 'Bearer ' + jwtToken }
+                });
+                const lotes = await res.json();
+                const tbody = document.getElementById('farm-tbody');
+                if (lotes.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No hay stock disponible</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = lotes.map(l => `
+                <tr>
+                    <td><strong>${l.loteId}</strong></td>
+                    <td>${l.medicamento}</td>
+                    <td>${l.categoria || '-'}</td>
+                    <td>${l.cantidad > 0 ? l.cantidad : '<span class="badge badge-gris">Sin stock</span>'}</td>
+                    <td>${(l.precioUnitario ?? 0).toFixed(2)}</td>
+                    <td>${l.fechaVencimiento || '-'}</td>
+                    <td>
+                        ${l.cantidad > 0
+                        ? `<button class="btn btn-primary btn-sm" onclick="abrirVenta('${l.loteId}', '${l.medicamento.replace(/'/g, "")}')">Vender</button>`
+                        : '—'}
+                    </td>
+                </tr>
+            `).join('');
+            } catch (err) {
+                showToast('Error', 'No se pudo cargar el stock', true);
+            }
+        }
+
+        function abrirVenta(loteId, medicamento) {
+            document.getElementById('venta-lote').value = loteId;
+            document.getElementById('venta-med').value = medicamento;
+            document.getElementById('venta-cant').value = 1;
+            document.getElementById('venta-cliente').value = 'Cliente General';
+            openModal('modal-vender');
+        }
+
+        async function venderMedicamento(e) {
+            e.preventDefault();
+            const loteId = document.getElementById('venta-lote').value;
+            const cantidad = document.getElementById('venta-cant').value;
+            const cliente = document.getElementById('venta-cliente').value;
+
+            try {
+                const url = `${API_FARMACIA}/farmacia/vender/${loteId}?cantidad=${cantidad}&cliente=${encodeURIComponent(cliente)}`;
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + jwtToken }
+                });
+                if (!res.ok) {
+                    const txt = await res.text();
+                    throw new Error(txt || 'Error al vender');
+                }
+                const venta = await res.json();
+                closeModal('modal-vender');
+                showToast('Venta registrada', `${venta.ventaId} · Total: S/. ${venta.total.toFixed(2)}`);
+                cargarFarmacia();
+            } catch (err) {
+                showToast('Error', 'No se pudo registrar la venta', true);
+            }
+        }
+
+        // ========================================
+        // VENTAS
+        // ========================================
+        async function cargarVentas() {
+            try {
+                const res = await fetch(API_FARMACIA + '/farmacia/ventas', {
+                    headers: { 'Authorization': 'Bearer ' + jwtToken }
+                });
+                const ventas = await res.json();
+                const tbody = document.getElementById('ventas-tbody');
+                if (ventas.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No hay ventas registradas</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = ventas.map(v => `
+                <tr>
+                    <td><strong>${v.ventaId}</strong></td>
+                    <td>${v.medicamento}</td>
+                    <td>${v.cantidadVendida}</td>
+                    <td>${v.cliente}</td>
+                    <td>${v.total.toFixed(2)}</td>
+                    <td>${formatDate(v.fechaVenta)}</td>
+                </tr>
+            `).join('');
+            } catch (err) {
+                showToast('Error', 'No se pudieron cargar las ventas', true);
+            }
+        }
+
+        // ========================================
+        // REPORTES
+        // ========================================
+        async function cargarReportes() {
+            try {
+                const resResumen = await fetch(API_REPORTES + '/reportes/resumen');
+                const resumen = await resResumen.json();
+                document.getElementById('rep-ventas').textContent = resumen.totalVentas ?? 0;
+                document.getElementById('rep-ingreso').textContent = 'S/. ' + (resumen.ingresoTotal ?? 0).toFixed(2);
+                document.getElementById('rep-unidades').textContent = resumen.totalUnidades ?? 0;
+
+                const resVentas = await fetch(API_REPORTES + '/reportes/ventas');
+                const ventas = await resVentas.json();
+                const tbody = document.getElementById('rep-tbody');
+                if (ventas.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No hay ventas registradas</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = ventas.map(v => `
+                <tr>
+                    <td><strong>${v.ventaId}</strong></td>
+                    <td>${v.medicamento}</td>
+                    <td>${v.cantidad}</td>
+                    <td>${v.total.toFixed(2)}</td>
+                    <td>${v.cliente}</td>
+                </tr>
+            `).join('');
+            } catch (err) {
+                showToast('Error', 'No se pudieron cargar los reportes', true);
+            }
+        }
+
+        // ========================================
+        // HELPERS
+        // ========================================
+        function badge(estado) {
+            const clases = {
+                'PRODUCIDO': 'badge-azul',
+                'EN_TRANSITO': 'badge-amarillo',
+                'ENVIADO_A_DISTRIBUIDOR': 'badge-verde',
+                'EN_DISTRIBUIDOR': 'badge-azul',
+                'DESPACHADO': 'badge-amarillo',
+                'ENVIADO_A_FARMACIA': 'badge-verde',
+                'EN_FARMACIA': 'badge-morado'
+            };
+            return `<span class="badge ${clases[estado] || 'badge-gris'}">${estado || '-'}</span>`;
+        }
+
+        function formatDate(isoStr) {
+            if (!isoStr) return '-';
+            const d = new Date(isoStr);
+            return d.toLocaleString('es-PE', {
+                day: '2-digit', month: '2-digit', year: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+        }
+    </script>
+
+</body>
+
+</html>
